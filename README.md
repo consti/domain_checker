@@ -1,14 +1,16 @@
 ## Readme
 
-Quick and dirty™ domain_checker to check for free domains.
+Check domains based on a list of words AND their synonyms.
 
-Out of the box it checks for two letter domains on the .eu TLD.
+I'm using the [RoboWhois API](https://www.robowhois.com/) and [Wortschatz API](http://wortschatz.informatik.uni-leipzig.de) of the University of Leipzig.
 
-I'm using the [Robowhois API](https://www.robowhois.com/).
+* Store your (RoboWhois) ```API_KEY=XXXXXXXX``` in ```.env```.
+* Set your list of  (german) ```WORDS```. Make sure to correctly spell and capitalize them.
+* Run ```bundle && ./domain_checker.rb```
+* Buy that domain!
 
-* store your ```API_KEY=XXXXXXXX``` in ```.env```.
-* run ```bundle && ./domain_checker.rb```
-* buy that domain!
+Here's a [live run](http://showterm.io/6d55bafc2a2d8397dd342).
+
 
 ### License
 

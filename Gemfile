@@ -5,3 +5,4 @@ source "https://rubygems.org"
 gem 'robowhois'
 gem 'dotenv'
 gem 'term-ansicolor'
+gem 'wlapi'

@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 
-TLD = 'eu'
+TLD = 'de'
 BUY = 'http://www.easyname.com/de/domain/suchen/%{domain}'
-DOMAINS = [*?a..?z].permutation(2).map(&:join).shuffle
 
+WORDS = %w(Schnitzel Computer Hund)
+NUM_SYNONYMS = 20
+
+require 'wlapi'
 require 'robowhois'
 require 'dotenv'
 require 'term/ansicolor'
@@ -28,8 +31,13 @@ def name_available?(name)
 end
 
 
-@whois = RoboWhois.new(:api_key => ENV['API_KEY'])
+@whois     = RoboWhois.new(:api_key => ENV['API_KEY'])
+@thesaurus = WLAPI::API.new
 
-DOMAINS.each{ |name|
+names = WORDS.inject([]){ |h,w|
+  h + [*@thesaurus.synonyms(w, NUM_SYNONYMS)].map(&:downcase).reject{ |w| w[/[^[a-z_-]]+/] }
+}
+
+(names + WORDS.map(&:downcase)).uniq.shuffle.each{ |name|
   name_available?(name)
 }

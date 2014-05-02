@@ -6,10 +6,11 @@ I'm using the [RoboWhois API](https://www.robowhois.com/) and [Wortschatz API](h
 
 * Store your (RoboWhois) ```API_KEY=XXXXXXXX``` in ```.env```.
 * Set your list of  (german) ```WORDS```. Make sure to correctly spell and capitalize them.
+* Set your list of ```TLDS```
 * Run ```bundle && ./domain_checker.rb```
+* Look at the pretty output. On iTerm2: [CMD]+Click to open URLs to buy domains.
+* Check ```./available.txt``` for domains that are free
 * Buy that domain!
-
-Here's a [live run](http://showterm.io/6d55bafc2a2d8397dd342).
 
 
 ### License

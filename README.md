@@ -12,6 +12,8 @@ I'm using the [RoboWhois API](https://www.robowhois.com/) and [Wortschatz API](h
 * Check ```./available.txt``` for domains that are free
 * Buy that domain!
 
+Checkout [that screen recording](http://showterm.io/1e9da87d722ddf4b4079e) to see it in action!
+
 
 ### License
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-TLDS = %w(com de at)
-WORDS = %w(Schnitzel Auto Haus)
+TLDS = %w(com de)
+WORDS = %w(Laptop Tastatur)
 BUY  = 'http://www.easyname.com/de/domain/suchen/%{domain}'
 
 NUM_SYNONYMS = 20
@@ -49,6 +49,7 @@ credits_remaining = @whois.account["credits_remaining"]
 
 puts "-" * 80
 puts "Building word list."
+puts "-" * 80
 words_and_synonyms = WORDS.uniq.inject([]){ |h,w|
   h << w.downcase
   h + [*@thesaurus.synonyms(w, NUM_SYNONYMS)].map(&:downcase).reject{ |w| w[/[^[a-z_-]]+/] }
@@ -57,33 +58,55 @@ words_and_synonyms = WORDS.uniq.inject([]){ |h,w|
 total_domains = words_and_synonyms.product(TLDS).inject([]){ |h, (word, tld)|
   h << word + '.' + tld
 }
-puts "Words: #{ WORDS.count }"
-puts "Words and their synonyms: #{ words_and_synonyms.count }"
-puts "TLDS: #{ TLDS.count }"
-puts "-" * 80
 
-puts "Total domains: #{ total_domains.count }"
-if available_domains.any?
-  print "Domains previously marked as "
-  print "available".green.bold
-  print ": #{ available_domains.count }\n"
+@robo = -1
+def robo(t)
+  @robo += 1
+  "\t" * t +
+    [   " ..............\n",
+        " .  *      *  .\n",
+        "[.      '     .]\n",
+        " .            .\n",
+        " .     \\_/    .\n",
+        " ..............\n"][@robo]
+
 end
 
-if taken_domains.any?
-  print "Domains previously marked as "
-  print  "taken".red.bold
-  print ": #{ taken_domains.count }\n"
+puts "  #{ WORDS.count }\t| Words" + robo(6)
+puts "+ #{ words_and_synonyms.count - WORDS.count }\t| Synonyms" + robo(5)
+puts "* #{ TLDS.count }\t| TLDS" + robo(6)
+puts "-" * 40  + robo(2)
+puts "  #{ total_domains.count }\t  Variations" + robo(5)
+puts "-" * 40 + robo(2)
+
+if available_domains.any? || taken_domains.any?
+  if available_domains.any?
+    print "- #{ total_domains.count - (total_domains - available_domains).count }\t| Domains previously marked as "
+    print "available".green.bold
+    print "\n"
+  end
+
+  if taken_domains.any?
+    print "- #{ total_domains.count - (total_domains - taken_domains).count }\t| Domains previously marked as "
+    print  "taken".red.bold
+    print "\n"
+  end
+puts  "-" * 40
 end
 
 domains = total_domains - available_domains - taken_domains
 
-puts "Domains to check: #{ domains.length }"
-puts "Your remaining credit at RoboWhois: #{ credits_remaining }"
+print "  "
+print "#{ domains.length }".bold
+print "\t  Domains to check\n"
+puts  "-" * 80
+puts  "Your remaining credit at RoboWhois: #{ credits_remaining }"
 
 if domains.length > credits_remaining
   puts "Warning: Your RoboWhois credit is too low to check all domains.".bold
+else
+  puts "We are good to go! \\o/"
 end
-
 puts "-" * 80
 
 domains.each_index{ |index|

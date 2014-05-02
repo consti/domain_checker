@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
 
-TLDS = %w(com de)
-WORDS = %w(Laptop Tastatur)
+TLDS = %w(com de at)
+WORDS = %w(computer home happy sad)
+LANG = :en # :de
 BUY  = 'http://www.easyname.com/de/domain/suchen/%{domain}'
 
 NUM_SYNONYMS = 20
 
 require 'wlapi'
+require 'wordnik'
 require 'robowhois'
 require 'dotenv'
 require 'term/ansicolor'
@@ -14,6 +16,34 @@ Dotenv.load
 
 class String
   include Term::ANSIColor
+end
+
+def downcase_and_filter_words
+  WORDS.uniq.inject([]){ |h,word|
+    h << word.downcase
+    h + yield(word).map(&:downcase).reject{ |w| w[/[^[a-z_-]]+/] }
+  }.uniq.shuffle
+end
+
+case LANG
+when :en
+  Wordnik.configure do |config|
+    config.api_key = ENV['WORDNIK_API_KEY']
+    config.logger = Logger.new('/dev/null')
+  end
+  words_and_synonyms = downcase_and_filter_words { |word|
+    resp = Wordnik.word.get_related(word.downcase, :type => 'synonym')
+    if resp.any? && resp.first["words"]
+      [*resp.first["words"]]
+    else
+      []
+    end
+  }
+when :de
+  thesaurus = WLAPI::API.new
+  words_and_synonyms = downcase_and_filter_words { |word|
+    [*thesaurus.synonyms(word, NUM_SYNONYMS)]
+  }
 end
 
 def domain_available?(domain)
@@ -40,8 +70,7 @@ def checked_domains(filename)
   end
 end
 
-@whois     = RoboWhois.new(:api_key => ENV['API_KEY'])
-@thesaurus = WLAPI::API.new
+@whois     = RoboWhois.new(:api_key => ENV['ROBOWHOIS_API_KEY'])
 
 available_domains = checked_domains('available.txt')
 taken_domains     = checked_domains('taken.txt')
@@ -50,10 +79,6 @@ credits_remaining = @whois.account["credits_remaining"]
 puts "-" * 80
 puts "Building word list."
 puts "-" * 80
-words_and_synonyms = WORDS.uniq.inject([]){ |h,w|
-  h << w.downcase
-  h + [*@thesaurus.synonyms(w, NUM_SYNONYMS)].map(&:downcase).reject{ |w| w[/[^[a-z_-]]+/] }
-}.uniq.shuffle
 
 total_domains = words_and_synonyms.product(TLDS).inject([]){ |h, (word, tld)|
   h << word + '.' + tld

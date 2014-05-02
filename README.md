@@ -2,11 +2,13 @@
 
 Check domains based on a list of words AND their synonyms.
 
-I'm using the [RoboWhois API](https://www.robowhois.com/) and [Wortschatz API](http://wortschatz.informatik.uni-leipzig.de) of the University of Leipzig.
+I'm using the [RoboWhois API](https://www.robowhois.com/) to check for domain availability and the [Wordnik API](http://developer.wordnik.com/) and [Wortschatz API](http://wortschatz.informatik.uni-leipzig.de) to look up the synonyms.
 
-* Store your (RoboWhois) ```API_KEY=XXXXXXXX``` in ```.env```.
-* Set your list of  (german) ```WORDS```. Make sure to correctly spell and capitalize them.
+* Store your (RoboWhois) ```ROBOWHOIS_API_KEY=XXXXXXXX``` in ```.env```.
+* If you want to look up english words, you'll also have to get a [Wordnik API](http://developer.wordnik.com/) Key and store it as ```WORDNIK_API_KEY=xxxxx``` in ```.env```
+* Set your list of  ```WORDS```. Make sure to correctly spell and capitalize them.
 * Set your list of ```TLDS```
+* Set the language of your words. It's either ```:en``` or ```:de```
 * Run ```bundle && ./domain_checker.rb```
 * Look at the pretty output. On iTerm2: [CMD]+Click to open URLs to buy domains.
 * Check ```./available.txt``` for domains that are free

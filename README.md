@@ -16,6 +16,7 @@ I'm using the [RoboWhois API](https://www.robowhois.com/) to check for domain av
 
 Checkout [that screen recording](http://showterm.io/1e9da87d722ddf4b4079e) to see it in action!
 
+![DomainChecker in Action](http://i.imgur.com/gwBvr8C.png)
 
 ### License
 
